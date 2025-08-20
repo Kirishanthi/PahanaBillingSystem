@@ -8,6 +8,11 @@
 <body>
 <h2>Register</h2>
 
+<% String error = (String) request.getAttribute("error");
+   if(error != null){ %>
+   <p style="color:red"><%= error %></p>
+<% } %>
+
 <form action="<%=request.getContextPath()%>/RegisterServlet" method="post">
     Username: <input type="text" name="username" required><br><br>
     Email: <input type="email" name="email" required><br><br>
@@ -20,14 +25,8 @@ String status = request.getParameter("register");
 if("success".equals(status)) { 
 %>
     <p style="color:green">Registration Successful! Please <a href="login.jsp">login</a></p>
-<% 
-} else if("fail".equals(status)) { 
-%>
-    <p style="color:red">Registration Failed! Try again.</p>
 <% } %>
 
-
- <a href="/PahanaBillingSystem/login.jsp">Back to Login</a></p>
-
+<p><a href="<%=request.getContextPath()%>/login.jsp">Back to Login</a></p>
 </body>
 </html>
