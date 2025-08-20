@@ -29,6 +29,7 @@ public class BillServlet extends HttpServlet {
             response.sendRedirect("login.jsp");
             return;
         }
+
         UserBean user = (UserBean) session.getAttribute("currentUser");
         String role = user.getRole(); // admin or staff
 
@@ -44,7 +45,7 @@ public class BillServlet extends HttpServlet {
                 request.getRequestDispatcher("billList.jsp").forward(request, response);
 
             } else if ("generate".equals(action)) {
-                // Load customers and items for bill generation form
+                // Both admin & staff can generate bills
                 List<CustomerBean> customers = customerDao.getAllCustomers();
                 List<ItemBean> items = itemDao.getAllItems();
                 request.setAttribute("customers", customers);
@@ -79,6 +80,7 @@ public class BillServlet extends HttpServlet {
         }
 
         UserBean user = (UserBean) session.getAttribute("currentUser");
+        String role = user.getRole(); // For role-based check
 
         String action = request.getParameter("action");
         BillDao billDao = new BillDao();
@@ -88,6 +90,12 @@ public class BillServlet extends HttpServlet {
                 int customerId = Integer.parseInt(request.getParameter("customerId"));
                 String[] itemIds = request.getParameterValues("itemId");
                 String[] quantities = request.getParameterValues("quantity");
+
+                if(itemIds == null || quantities == null || itemIds.length != quantities.length) {
+                    session.setAttribute("error", "Select at least one item with quantity!");
+                    response.sendRedirect("BillServlet?action=generate");
+                    return;
+                }
 
                 List<BillItemBean> billItems = new ArrayList<>();
                 double totalAmount = 0;
@@ -113,7 +121,6 @@ public class BillServlet extends HttpServlet {
                 bill.setTotalAmount(totalAmount);
 
                 int billId = billDao.addBill(bill, billItems);
-
                 session.setAttribute("message", "Bill generated successfully! Bill ID: " + billId);
                 response.sendRedirect(request.getContextPath() + "/BillServlet?action=list");
             } else {
