@@ -2,12 +2,11 @@ package servlet;
 
 import Bean.RegisterBean;
 import Dao.RegisterDao;
+import PasswordUtil.PasswordUtil;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import jakarta.servlet.http.HttpServlet;
-
 
 @WebServlet("/RegisterServlet")
 public class RegisterServlet extends HttpServlet {
@@ -28,21 +27,20 @@ public class RegisterServlet extends HttpServlet {
 
         String role = "staff"; // hardcoded staff role
 
+        // ✅ Hash the password before storing
+        String hashedPassword = PasswordUtil.hashPassword(password);
+
         RegisterBean user = new RegisterBean();
         user.setUsername(username);
         user.setEmail(email);
-        user.setPassword(password);
+        user.setPassword(hashedPassword);
         user.setRole(role);
 
         RegisterDao dao = new RegisterDao();
         boolean success = dao.registerUser(user);
 
         if(success) {
-            // ❌ Remove session creation here
-            // HttpSession session = request.getSession();
-            // session.setAttribute("currentUser", user);
-
-            // ✅ Redirect to login page after registration
+            // Redirect to login page after registration
             response.sendRedirect(request.getContextPath() + "/login.jsp?register=success");
         } else {
             request.setAttribute("error", "Username or Email already exists!");
@@ -58,5 +56,4 @@ public class RegisterServlet extends HttpServlet {
         boolean hasDigit = password.matches(".*\\d.*");
         return hasLetter && hasDigit;
     }
-
-    }
+}
