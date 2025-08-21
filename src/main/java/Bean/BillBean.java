@@ -8,7 +8,6 @@ public class BillBean {
     private Date billDate;
     private double totalAmount;
 
-    // Getters & Setters
     public int getBillId() { return billId; }
     public void setBillId(int billId) { this.billId = billId; }
 
