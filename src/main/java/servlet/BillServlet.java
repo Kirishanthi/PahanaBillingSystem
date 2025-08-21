@@ -1,134 +1,200 @@
 package servlet;
 
-import Bean.BillBean;
-import Bean.BillItemBean;
-import Bean.CustomerBean;
-import Bean.ItemBean;
-import Bean.UserBean;
-import Dao.BillDao;
-import Dao.CustomerDao;
-import Dao.ItemDao;
+import Bean.*;
+import Dao.*;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
-import java.sql.Date;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-@WebServlet("/BillServlet")
+@WebServlet(name = "BillServlet", urlPatterns = {"/BillServlet"})
 public class BillServlet extends HttpServlet {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    private final ItemDao itemDao = new ItemDao();
+    private final CustomerDao customerDao = new CustomerDao();
+    private final BillDao billDao = new BillDao();
 
+    // Admin or Staff allowed
+    private boolean requireStaffOrAdmin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("currentUser") == null) {
+        UserBean current = (session != null) ? (UserBean) session.getAttribute("currentUser") : null;
+        if (current == null || current.getRole() == null) {
             response.sendRedirect("login.jsp");
-            return;
+            return false;
         }
+        String role = current.getRole().trim().toLowerCase();
+        if (!role.equals("admin") && !role.equals("staff")) {
+            response.sendRedirect("login.jsp");
+            return false;
+        }
+        return true;
+    }
 
-        UserBean user = (UserBean) session.getAttribute("currentUser");
-        String role = user.getRole(); // admin or staff
+    @SuppressWarnings("unchecked")
+    private List<CartItemBean> getCart(HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
+        List<CartItemBean> cart = (List<CartItemBean>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new ArrayList<>();
+            session.setAttribute("cart", cart);
+        }
+        return cart;
+    }
 
-        String action = request.getParameter("action");
-        BillDao billDao = new BillDao();
-        CustomerDao customerDao = new CustomerDao();
-        ItemDao itemDao = new ItemDao();
+    private void flash(HttpServletRequest req, String key, String value) {
+        req.getSession().setAttribute(key, value);
+    }
+
+    // --- helper: lookup customer by account number (no DAO change needed) ---
+    private CustomerBean findCustomerByAccountNumber(String accNo) {
+        if (accNo == null || accNo.trim().isEmpty()) return null;
+        String sql = "SELECT customer_id, account_number, name, address, telephone, date_registered " +
+                     "FROM customers WHERE account_number = ?";
+        try (Connection con = DBconnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, accNo.trim());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    CustomerBean c = new CustomerBean();
+                    c.setCustomerId(rs.getInt("customer_id"));
+                    c.setAccountNumber(rs.getString("account_number"));
+                    c.setName(rs.getString("name"));
+                    c.setAddress(rs.getString("address"));
+                    c.setTelephone(rs.getString("telephone"));
+                    c.setDateRegistered(rs.getDate("date_registered"));
+                    return c;
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
+    }
+
+    // -------- GET --------
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!requireStaffOrAdmin(request, response)) return;
+
+        String action = Optional.ofNullable(request.getParameter("action")).orElse("form");
 
         try {
-            if ("list".equals(action)) {
-                List<BillBean> bills = billDao.getAllBills();
-                request.setAttribute("bills", bills);
-                request.getRequestDispatcher("billList.jsp").forward(request, response);
-
-            } else if ("generate".equals(action)) {
-                // Both admin & staff can generate bills
-                List<CustomerBean> customers = customerDao.getAllCustomers();
-                List<ItemBean> items = itemDao.getAllItems();
-                request.setAttribute("customers", customers);
-                request.setAttribute("items", items);
-                request.getRequestDispatcher("generatebill.jsp").forward(request, response);
-
-            } else if ("print".equals(action)) {
-                int billId = Integer.parseInt(request.getParameter("billId"));
-                BillBean bill = billDao.getBillById(billId);
-                List<BillItemBean> items = billDao.getBillItems(billId);
-                request.setAttribute("bill", bill);
-                request.setAttribute("items", items);
-                request.getRequestDispatcher("printbill.jsp").forward(request, response);
-
-            } else {
-                response.sendRedirect("BillServlet?action=list");
+            switch (action) {
+                case "remove": {
+                    int itemId = Integer.parseInt(request.getParameter("itemId"));
+                    List<CartItemBean> cart = getCart(request);
+                    cart.removeIf(ci -> ci.getItemId() == itemId);
+                    response.sendRedirect("BillServlet?action=form");
+                    break;
+                }
+                case "print": {
+                    int billId = Integer.parseInt(request.getParameter("billId"));
+                    BillBean bill = billDao.getBill(billId);
+                    if (bill == null) {
+                        flash(request, "error", "Bill not found.");
+                        response.sendRedirect("BillServlet?action=form");
+                        return;
+                    }
+                    request.setAttribute("bill", bill);
+                    request.getRequestDispatcher("printbill.jsp").forward(request, response);
+                    break;
+                }
+                case "form":
+                default: {
+                    // Use your ItemDao.getAllItems()
+                    request.setAttribute("items", itemDao.getAllItems());
+                    request.getRequestDispatcher("generatebill.jsp").forward(request, response);
+                }
             }
-
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            throw new ServletException(e);
         }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    // -------- POST --------
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!requireStaffOrAdmin(request, response)) return;
 
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("currentUser") == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-
-        UserBean user = (UserBean) session.getAttribute("currentUser");
-        String role = user.getRole(); // For role-based check
-
-        String action = request.getParameter("action");
-        BillDao billDao = new BillDao();
-
+        String action = Optional.ofNullable(request.getParameter("action")).orElse("add");
         try {
-            if ("generate".equals(action)) {
-                int customerId = Integer.parseInt(request.getParameter("customerId"));
-                String[] itemIds = request.getParameterValues("itemId");
-                String[] quantities = request.getParameterValues("quantity");
+            switch (action) {
+                case "add": {
+                    int itemId = Integer.parseInt(request.getParameter("itemId"));
+                    int qty = Integer.parseInt(request.getParameter("quantity"));
+                    if (qty <= 0) { flash(request, "error", "Quantity must be > 0"); response.sendRedirect("BillServlet?action=form"); return; }
 
-                if(itemIds == null || quantities == null || itemIds.length != quantities.length) {
-                    session.setAttribute("error", "Select at least one item with quantity!");
-                    response.sendRedirect("BillServlet?action=generate");
-                    return;
+                    // Use your ItemDao.getItemById()
+                    ItemBean item = itemDao.getItemById(itemId);
+                    if (item == null) { flash(request, "error", "Item not found"); response.sendRedirect("BillServlet?action=form"); return; }
+                    if (item.getStockQuantity() < qty) { flash(request, "error", "Not enough stock"); response.sendRedirect("BillServlet?action=form"); return; }
+
+                    List<CartItemBean> cart = getCart(request);
+                    boolean merged = false;
+                    for (CartItemBean ci : cart) {
+                        if (ci.getItemId() == itemId) {
+                            ci.setQuantity(ci.getQuantity() + qty);
+                            merged = true; break;
+                        }
+                    }
+                    if (!merged) {
+                        cart.add(new CartItemBean(item.getItemId(), item.getTitle(), item.getPrice(), qty));
+                    }
+                    flash(request, "message", "Item added to bill.");
+                    response.sendRedirect("BillServlet?action=form");
+                    break;
                 }
 
-                List<BillItemBean> billItems = new ArrayList<>();
-                double totalAmount = 0;
+                case "save": {
+                    // Support both customerId OR accountNumber
+                    CustomerBean cust = null;
 
-                for (int i = 0; i < itemIds.length; i++) {
-                    int itemId = Integer.parseInt(itemIds[i]);
-                    int qty = Integer.parseInt(quantities[i]);
-                    double price = billDao.getItemPrice(itemId);
-                    double itemTotal = price * qty;
-                    totalAmount += itemTotal;
+                    String customerIdStr = request.getParameter("customerId");
+                    if (customerIdStr != null && !customerIdStr.trim().isEmpty()) {
+                        try {
+                            int cid = Integer.parseInt(customerIdStr.trim());
+                            cust = customerDao.getCustomerById(cid);
+                        } catch (NumberFormatException ignore) {}
+                    }
+                    if (cust == null) {
+                        String accountNumber = request.getParameter("accountNumber");
+                        cust = findCustomerByAccountNumber(accountNumber);
+                    }
 
-                    BillItemBean bi = new BillItemBean();
-                    bi.setItemId(itemId);
-                    bi.setQuantity(qty);
-                    bi.setPrice(price);
-                    bi.setTotalAmount(itemTotal);
-                    billItems.add(bi);
+                    if (cust == null) {
+                        flash(request, "error", "Invalid customer (ID or Account Number).");
+                        response.sendRedirect("BillServlet?action=form");
+                        return;
+                    }
+
+                    List<CartItemBean> cart = getCart(request);
+                    if (cart.isEmpty()) {
+                        flash(request, "error", "No items in bill.");
+                        response.sendRedirect("BillServlet?action=form");
+                        return;
+                    }
+                    int billId = billDao.createBill(cust.getCustomerId(), cart);
+
+                    // clear cart
+                    request.getSession().removeAttribute("cart");
+
+                    // go to print
+                    response.sendRedirect("BillServlet?action=print&billId=" + billId);
+                    break;
                 }
 
-                BillBean bill = new BillBean();
-                bill.setCustomerId(customerId);
-                bill.setBillDate(new Date(System.currentTimeMillis()));
-                bill.setTotalAmount(totalAmount);
-
-                int billId = billDao.addBill(bill, billItems);
-                session.setAttribute("message", "Bill generated successfully! Bill ID: " + billId);
-                response.sendRedirect(request.getContextPath() + "/BillServlet?action=list");
-            } else {
-                response.sendRedirect(request.getContextPath() + "/BillServlet?action=list");
+                default:
+                    response.sendRedirect("BillServlet?action=form");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            throw new ServletException(e);
         }
     }
 }
