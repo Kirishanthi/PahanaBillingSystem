@@ -1,0 +1,134 @@
+/* ===== Register page — EXACT like the image ===== */
+:root{
+  --bg1:#c084fc;           /* top purple */
+  --bg2:#a78bfa;           /* bottom purple */
+  --pill:#6d28d9;          /* deep purple badge/button */
+  --pillShadow:rgba(109,40,217,.35);
+  --card:#ffffff;          /* white form card */
+  --cardBorder:#6d28d9;    /* purple outline */
+  --field:#f3f4f6;         /* input bg */
+  --fieldBorder:#e5e7eb;   /* input border */
+  --ink:#0f172a;           /* body text */
+}
+
+*{ box-sizing:border-box; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif }
+html,body{ height:100% }
+body{
+  margin:0;
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  color:var(--ink);
+  padding:24px 16px 40px;
+}
+
+/* Big heading left-aligned (WellCome...) */
+h1{
+  width:min(960px,92vw);
+  margin:6px auto 10px;
+  text-align:left;
+  font-size:46px;
+  line-height:1.1;
+  font-weight:900;
+  letter-spacing:.2px;
+  color:#1f2937;
+}
+
+/* Centered purple pill “Register” */
+h2{
+  margin:0 auto 14px;
+  width:max-content;
+  padding:10px 18px;
+  background:var(--pill);
+  color:#fff;
+  border-radius:14px;
+  font-size:26px;
+  font-weight:900;
+  letter-spacing:.2px;
+  box-shadow:0 12px 22px var(--pillShadow);
+}
+
+/* Error / success flashes (if present) */
+p[style*="color:red"]{
+  width:min(560px,92vw);
+  margin:0 auto 10px;
+  padding:8px 10px;
+  border-radius:10px;
+  background:#fff1f2;
+  color:#991b1b !important;
+  border:1px solid #fecaca;
+  font-weight:600;
+}
+p[style*="color:green"]{
+  width:min(560px,92vw);
+  margin:10px auto 0;
+  padding:8px 10px;
+  border-radius:10px;
+  background:#ecfdf5;
+  color:#065f46 !important;
+  border:1px solid #a7f3d0;
+  font-weight:600;
+}
+
+/* White rounded card with purple border */
+form[action$="/RegisterServlet"]{
+  width:min(560px,92vw);
+  margin:0 auto;
+  padding:24px 22px 18px;
+  background:var(--card);
+  border:2px solid var(--cardBorder);
+  border-radius:18px;
+  box-shadow:0 10px 24px rgba(54,0,92,.25);
+  line-height:1.35;
+  color:#374151; /* label text (Username/Email/Password) */
+}
+
+/* Rounded inputs */
+form[action$="/RegisterServlet"] input[type="text"],
+form[action$="/RegisterServlet"] input[type="email"],
+form[action$="/RegisterServlet"] input[type="password"]{
+  display:block;
+  width:100%;
+  height:44px;
+  padding:10px 14px;
+  margin:8px 0 22px;
+  border-radius:12px;
+  border:1px solid var(--fieldBorder);
+  background:var(--field);
+  color:var(--ink);
+  outline:none;
+  font-size:15px;
+}
+form[action$="/RegisterServlet"] input:focus{
+  border-color:#c4b5fd;
+  box-shadow:0 0 0 4px rgba(196,181,253,.45);
+}
+
+/* Small purple button (left inside card) */
+form[action$="/RegisterServlet"] input[type="submit"]{
+  display:inline-block;
+  padding:10px 16px;
+  border:0;
+  border-radius:12px;
+  background:var(--pill);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 10px 18px var(--pillShadow);
+}
+form[action$="/RegisterServlet"] input[type="submit"]:hover{ filter:brightness(.98) }
+form[action$="/RegisterServlet"] input[type="submit"]:active{ transform:translateY(1px) }
+
+/* Bottom link centered (“Back to Login”) */
+body > p{
+  text-align:center;
+  margin:16px 0 0;
+  color:#4c1d95;
+}
+body > p a{
+  color:#5b21b6;
+  text-decoration:none;
+  font-weight:700;
+}
+body > p a:hover{ text-decoration:underline }
+
+/* Tighten the <br><br> gaps inside the form */
+form[action$="/RegisterServlet"] br{ line-height:0 }

@@ -1,0 +1,108 @@
+/* ===== Manage Staff (dark-blue card table) — no markup changes ===== */
+:root{
+  --bg:#f6f8fc;
+  --panel:#0e2a6d;           /* dark blue card/table */
+  --thead:#10307a;           /* header blue */
+  --text:#ffffff;
+  --muted:#c7d2fe;
+  --line:rgba(255,255,255,.16);
+  --btn:#22c55e;             /* not used here but kept for consistency */
+  --danger:#ef4444;
+}
+
+body{
+  background:var(--bg);
+  margin:0;
+  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:#0f172a;
+}
+
+h2{
+  text-align:center;
+  margin:22px 0 8px;
+  font-weight:800;
+  color:#0f172a;
+}
+
+/* Flash success (your inline style uses color:green; we enhance around it) */
+p[style*="color:green"]{
+  background:#ecfdf5;         /* mint */
+  color:#065f46 !important;
+  border:1px solid #a7f3d0;
+  border-radius:10px;
+  width:min(720px,95vw);
+  margin:8px auto;
+  padding:8px 10px;
+  font-weight:600;
+}
+
+/* Table as a compact centered dark-blue card */
+table{
+  width:min(720px,95vw);      /* small box */
+  margin:14px auto 28px;
+  border:none !important;     /* override border="1" */
+  border-collapse:separate;
+  border-spacing:0;
+  background:var(--panel);
+  color:var(--text);
+  border-radius:16px;
+  box-shadow:0 18px 40px rgba(2,6,23,.18);
+  overflow:hidden;            /* keeps radius in some browsers */
+}
+
+/* Header row */
+table tr:first-child th{
+  background:var(--thead);
+  color:#fff;
+  text-align:left;
+  font-weight:800;
+  padding:12px 14px;
+  border-bottom:1px solid var(--line);
+}
+
+/* Cells */
+table td{
+  padding:12px 14px;
+  border-bottom:1px solid var(--line);
+}
+
+/* Remove last divider */
+table tr:last-child td{ border-bottom:none; }
+
+/* Zebra + hover */
+table tr:nth-child(even) td{ background:rgba(255,255,255,.04); }
+table tr:hover td{ background:rgba(255,255,255,.08); }
+
+/* Action links (Edit/Delete) */
+table a{
+  text-decoration:none;
+  font-weight:700;
+}
+
+/* Edit pill */
+table a[href*="action=edit"]{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  color:#f8fafc;
+  border:1px solid rgba(255,255,255,.24);
+}
+
+/* Delete pill (red) */
+table a[href*="action=delete"]{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  background:rgba(239,68,68,.18);
+  color:#fee2e2;
+  border:1px solid rgba(239,68,68,.35);
+  margin-left:6px;
+}
+table a[href*="action=delete"]:hover{ background:rgba(239,68,68,.28); }
+
+/* Mobile tweaks */
+@media (max-width:640px){
+  table{ font-size:12px; }
+  table tr:first-child th, table td{ padding:10px 12px; }
+}

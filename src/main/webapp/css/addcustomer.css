@@ -1,0 +1,80 @@
+/* --- Add Customer (no markup changes) --- */
+
+/* Page background + heading */
+body{
+  background:#f6f8fc;
+}
+h2{
+  text-align:center;
+  margin:24px 0 10px;
+  font-weight:800;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:#0f172a;
+}
+
+/* Make the <form> itself the small dark-blue card */
+form[action="CustomerServlet"]{
+  width:min(420px, 92vw);
+  margin: 18px auto;
+  padding: 20px 18px;
+  background:#0e2a6d;              /* dark blue box */
+  color:#ffffff;                    /* label text color */
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow: 0 18px 40px rgba(2,6,23,.18);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  line-height:1.35;
+}
+
+/* Inputs become full-width blocks (labels are the plain text before them) */
+form[action="CustomerServlet"] input[type="text"],
+form[action="CustomerServlet"] input[type="date"]{
+  display:block;                   /* pushes input to next line under label text */
+  width:100%;
+  padding:10px 12px;
+  margin:6px 0 12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.25);
+  background:#ffffff;
+  color:#0f172a;
+  outline:none;
+  font-size:14px;
+}
+form[action="CustomerServlet"] input[type="text"]:focus,
+form[action="CustomerServlet"] input[type="date"]:focus{
+  border-color:#93c5fd;
+  box-shadow:0 0 0 3px rgba(59,130,246,.25);
+}
+
+/* Submit button */
+form[action="CustomerServlet"] input[type="submit"]{
+  width:100%;
+  padding:12px 14px;
+  border:0;
+  border-radius:12px;
+  background:#22c55e;
+  color:#0b2f1e;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow: 0 8px 18px rgba(34,197,94,.28);
+}
+form[action="CustomerServlet"] input[type="submit"]:hover{
+  filter:brightness(.98);
+}
+
+/* Back link centered under the card without changing markup */
+a[href*="CustomerServlet"][href*="action=list"]{
+  display:block;
+  width:max-content;
+  margin:10px auto 0;
+  color:#374151;
+  text-decoration:none;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size:13px;
+}
+a[href*="CustomerServlet"][href*="action=list"]:hover{
+  text-decoration:underline;
+}
+
+/* Optional: tidy the <br> spacing a bit (keeps them but reduces their height) */
+form[action="CustomerServlet"] br{ line-height:0; }

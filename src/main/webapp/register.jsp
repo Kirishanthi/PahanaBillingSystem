@@ -3,9 +3,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Register</title>
+    <title>Register</title>    
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/register.css">
+    
 </head>
 <body>
+<h1>WellCome to Pahana edu!</h1>
 <h2>Register</h2>
 
 <% String error = (String) request.getAttribute("error");

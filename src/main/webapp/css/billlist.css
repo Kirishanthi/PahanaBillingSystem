@@ -1,0 +1,78 @@
+/* ===== Bill List (compact dark-blue card) — no markup changes ===== */
+:root{
+  --bg:#f6f8fc;
+  --panel:#0e2a6d;      /* table/card bg */
+  --thead:#10307a;      /* header blue */
+  --text:#ffffff;
+  --muted:#c7d2fe;
+  --line:rgba(255,255,255,.16);
+  --btn:#22c55e; --btnText:#0b2f1e;     /* green action */
+  --pill:#2563eb;                         /* blue pill */
+}
+
+body{
+  background:var(--bg);
+  margin:16px;
+  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:#0f172a;
+}
+
+h2{
+  text-align:center;
+  margin:18px 0 10px;
+  font-weight:800;
+}
+
+/* Flash success (enhance inline green) */
+p[style*="color:green"]{
+  background:#ecfdf5; color:#065f46 !important;
+  border:1px solid #a7f3d0; border-radius:10px;
+  width:min(720px,95vw); margin:8px auto; padding:8px 10px; font-weight:600;
+}
+
+/* Table as a small centered card */
+table{
+  width:min(720px,95vw);
+  margin:10px auto 18px;
+  border:none !important;                 /* override border="1" */
+  border-collapse:separate; border-spacing:0;
+  background:var(--panel); color:var(--text);
+  border-radius:16px; overflow:hidden;
+  box-shadow:0 16px 32px rgba(2,6,23,.18);
+}
+tr:first-child th{
+  background:var(--thead);
+  color:#fff; text-align:left; font-weight:800;
+  padding:12px 14px; border-bottom:1px solid var(--line);
+}
+td{
+  padding:12px 14px; border-bottom:1px solid var(--line);
+}
+tr:last-child td{ border-bottom:none; }
+
+/* Zebra + hover */
+tr:nth-child(even) td{ background:rgba(255,255,255,.04); }
+tr:hover td{ background:rgba(255,255,255,.08); }
+
+/* Numeric alignments */
+td:nth-child(4){                /* Total Amount */
+  text-align:right; font-variant-numeric:tabular-nums;
+}
+
+/* Action links inside table (Print) */
+td a{
+  text-decoration:none; font-weight:700;
+  display:inline-block; padding:6px 10px; border-radius:999px;
+  background:rgba(37,99,235,.16); color:#e5edff;
+  border:1px solid rgba(37,99,235,.35);
+}
+td a:hover{ background:rgba(37,99,235,.26); }
+
+/* Bottom "Generate New Bill" button */
+a[href*="BillServlet"][href*="action=generate"]{
+  display:block; width:max-content; margin:0 auto;
+  background:var(--btn); color:var(--btnText); text-decoration:none;
+  padding:10px 14px; border-radius:12px; font-weight:800; border:0;
+  box-shadow:0 8px 18px rgba(34,197,94,.28);
+}
+a[href*="BillServlet"][href*="action=generate"]:hover{ filter:brightness(.98); }

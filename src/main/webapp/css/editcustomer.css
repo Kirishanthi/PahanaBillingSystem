@@ -1,0 +1,95 @@
+/* ===== Edit Customer — small dark-blue card (no markup changes) ===== */
+:root{
+  --bg:#f6f8fc;          /* page background */
+  --panel:#0e2a6d;       /* dark blue card */
+  --text:#ffffff;        /* text on card */
+  --muted:#c7d2fe;       /* hint/label tone */
+  --line:rgba(255,255,255,.18);
+  --field:#ffffff;       /* input bg */
+  --fieldText:#0f172a;   /* input text */
+  --btn:#22c55e;         /* primary */
+  --btnText:#0b2f1e;
+}
+
+*{ box-sizing:border-box; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif }
+html,body{ height:100% }
+body{ margin:0; background:var(--bg) }
+
+/* Page title */
+h2{
+  text-align:center;
+  margin:22px 0 10px;
+  font-weight:800;
+  color:#0f172a;
+}
+
+/* Success flash (enhance your inline green) */
+p[style*="color:green"]{
+  background:#ecfdf5; color:#065f46 !important;
+  border:1px solid #a7f3d0; border-radius:10px;
+  width:min(460px,94vw); margin:8px auto;
+  padding:8px 10px; font-weight:600;
+}
+
+/* Make the form itself the small dark-blue card */
+form[action="CustomerServlet"]{
+  width:min(460px,94vw);
+  margin:10px auto 14px;
+  padding:18px 16px;
+  background:var(--panel);
+  color:var(--text);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:0 18px 40px rgba(2,6,23,.18);
+  line-height:1.35;
+}
+
+/* The labels are plain text before inputs; push inputs onto next line */
+form[action="CustomerServlet"] input[type="text"],
+form[action="CustomerServlet"] input[type="date"]{
+  display:block;
+  width:100%;
+  padding:10px 12px;
+  margin:6px 0 14px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:var(--field);
+  color:var(--fieldText);
+  outline:none;
+  font-size:14px;
+}
+form[action="CustomerServlet"] input[type="text"]:focus,
+form[action="CustomerServlet"] input[type="date"]:focus{
+  border-color:#93c5fd;
+  box-shadow:0 0 0 3px rgba(59,130,246,.25);
+}
+
+/* Submit button */
+form[action="CustomerServlet"] input[type="submit"]{
+  width:100%;
+  padding:12px 14px;
+  border:0;
+  border-radius:12px;
+  background:var(--btn);
+  color:var(--btnText);
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 8px 18px rgba(34,197,94,.28);
+}
+form[action="CustomerServlet"] input[type="submit"]:hover{
+  filter:brightness(.98);
+}
+
+/* Back link centered */
+a[href*="CustomerServlet"][href*="action=list"]{
+  display:block;
+  width:max-content;
+  margin:10px auto 0;
+  color:#374151;
+  text-decoration:none;
+  font-size:13px; font-weight:600;
+}
+a[href*="CustomerServlet"][href*="action=list"]:hover{ text-decoration:underline }
+
+/* Reduce <br> vertical impact without removing them */
+form[action="CustomerServlet"] br{ line-height:0; }

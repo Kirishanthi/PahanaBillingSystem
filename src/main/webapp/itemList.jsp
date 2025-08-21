@@ -34,7 +34,8 @@
     List<ItemBean> items = (List<ItemBean>) request.getAttribute("items");
     if(items != null){
         for(ItemBean i : items){
-%>
+%><title>Pahana Edu - Login</title><link rel="stylesheet" href="<%=request.getContextPath()%>/css/itemlist.css">
+
 <tr>
     <td><%= i.getItemId() %></td>
     <td><%= i.getTitle() %></td>

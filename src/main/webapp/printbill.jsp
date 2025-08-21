@@ -1,73 +1,91 @@
-<%@ page import="java.util.List, Bean.BillBean, Bean.BillItemBean, Bean.CustomerBean" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page import="Bean.BillBean, Bean.BillItemBean, Bean.UserBean" %>
+<%@ page import="java.util.*, java.math.BigDecimal" %>
 <%
-    UserBean user = (UserBean) session.getAttribute("currentUser");
-    if(user == null || (!"admin".equals(user.getRole()) && !"staff".equals(user.getRole()))){
-        response.sendRedirect("login.jsp");
+    // Access control: admin + staff only
+    UserBean currentUser = (UserBean) session.getAttribute("currentUser");
+    if (currentUser == null || currentUser.getRole() == null) {
+        response.sendRedirect(request.getContextPath() + "/login.jsp");
+        return;
+    }
+    String role = currentUser.getRole().trim().toLowerCase();
+    if (!role.equals("admin") && !role.equals("staff")) {
+        response.sendRedirect(request.getContextPath() + "/login.jsp");
         return;
     }
 
     BillBean bill = (BillBean) request.getAttribute("bill");
-    List<BillItemBean> items = (List<BillItemBean>) request.getAttribute("items");
-    CustomerBean customer = (CustomerBean) request.getAttribute("customer");
+    if (bill == null) {
+        response.sendRedirect(request.getContextPath() + "/BillServlet?action=form");
+        return;
+    }
+
+    List<BillItemBean> items = bill.getItems();
 %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Print Bill</title>
+    <title>Print Bill #<%= bill.getBillId() %></title><title>Pahana Edu - Login</title><link rel="stylesheet" href="<%=request.getContextPath()%>/css/printtbill.css">
+    
     <style>
-        table { border-collapse: collapse; width: 70%; }
-        table, th, td { border: 1px solid black; }
-        th, td { padding: 8px; text-align: left; }
-        h2, h3 { margin: 0; }
-        .center { text-align: center; }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { display:flex; justify-content:space-between; gap: 24px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 14px; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background: #f5f5f5; }
+        .tot { text-align: right; font-weight: bold; }
+        .controls { margin-top: 16px; }
+        .btn { padding:8px 14px; border:1px solid #999; background:#fafafa; border-radius:4px; text-decoration:none; cursor:pointer; }
     </style>
 </head>
 <body>
-<div class="center">
-    <h2>Company Name / Shop Name</h2>
-    <h3>Bill Receipt</h3>
+<div class="header">
+    <div>
+        <h2>Pahana Edu — Invoice</h2>
+        <p><strong>Bill #:</strong> <%= bill.getBillId() %><br/>
+           <strong>Date:</strong> <%= bill.getBillDate() %></p>
+    </div>
+    <div>
+        <p><strong>Customer:</strong> <%= bill.getCustomer().getName() %><br/>
+           <strong>Account #:</strong> <%= bill.getCustomer().getAccountNumber() %><br/>
+           <strong>Phone:</strong> <%= bill.getCustomer().getTelephone() %><br/>
+           <strong>Address:</strong> <%= bill.getCustomer().getAddress() %></p>
+    </div>
 </div>
-
-<p><strong>Bill ID:</strong> <%= bill.getBillId() %></p>
-<p><strong>Customer:</strong> <%= customer.getName() %> (<%= customer.getAccountNumber() %>)</p>
-<p><strong>Bill Date:</strong> <%= bill.getBillDate() %></p>
 
 <table>
     <tr>
-        <th>S.No</th>
-        <th>Item</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Total</th>
+        <th>#</th><th>Item</th><th>Qty</th><th>Unit Price</th><th>Line Total</th>
     </tr>
-<%
-    int serial = 1;
-    double grandTotal = 0;
-    if(items != null){
-        for(BillItemBean bi : items){
-            grandTotal += bi.getTotalAmount();
-%>
+    <%
+        int i = 1;
+        BigDecimal grand = BigDecimal.ZERO;
+        if (items != null) {
+            for (BillItemBean bi : items) {
+                // BigDecimal arithmetic
+                BigDecimal line = bi.getPrice().multiply(new BigDecimal(bi.getQuantity()));
+                grand = grand.add(line);
+    %>
     <tr>
-        <td><%= serial++ %></td>
-        <td><%= bi.getItemName() %></td>
+        <td><%= i++ %></td>
+        <td><%= bi.getTitle() %></td>
         <td><%= bi.getQuantity() %></td>
-        <td><%= String.format("%.2f", bi.getPrice()) %></td>
-        <td><%= String.format("%.2f", bi.getTotalAmount()) %></td>
+        <td>Rs.<%= bi.getPrice() %></td>
+        <td>Rs.<%= line %></td>
     </tr>
-<%
+    <%
+            }
         }
-    }
-%>
+    %>
     <tr>
-        <td colspan="4" style="text-align:right;"><strong>Grand Total:</strong></td>
-        <td><strong><%= String.format("%.2f", grandTotal) %></strong></td>
+        <td colspan="4" class="tot">Total</td>
+        <td class="tot">Rs.<%= grand %></td>
     </tr>
 </table>
 
-<br>
-<div class="center">
-    <button onclick="window.print()">Print Bill</button>
-    <a href="BillServlet?action=list">Back to Bill List</a>
+<div class="controls">
+    <button class="btn" onclick="window.print()">Print</button>
+    <a class="btn" href="<%= request.getContextPath() %>/BillServlet?action=form">New Bill</a>
 </div>
 </body>
 </html>

@@ -7,6 +7,7 @@
     }
     ItemBean i = (ItemBean) request.getAttribute("item");
 %>
+<title>Pahana Edu - Login</title><link rel="stylesheet" href="<%=request.getContextPath()%>/css/register.css">
 
 <h2>Edit Item</h2>
 <form action="ItemServlet" method="post">

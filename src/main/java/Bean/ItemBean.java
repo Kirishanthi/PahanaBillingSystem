@@ -12,6 +12,7 @@ public class ItemBean {
     private int stockQuantity;
     private Date dateAdded;
 
+    // Getters and Setters
     public int getItemId() { return itemId; }
     public void setItemId(int itemId) { this.itemId = itemId; }
 

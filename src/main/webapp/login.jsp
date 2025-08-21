@@ -4,7 +4,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Pahana Edu - Login</title>
+<title>Pahana Edu - Login</title><link rel="stylesheet" href="<%=request.getContextPath()%>/css/register.css">
+
 </head>
 <body>
 

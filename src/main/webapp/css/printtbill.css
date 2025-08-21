@@ -1,0 +1,142 @@
+/* ===== Print Bill — compact + colored (screen + print) ===== */
+:root{
+  --bg:#f6f8fc;     /* screen background */
+  --paper:#ffffff;  /* invoice surface */
+  --ink:#0f172a;    /* primary text */
+  --muted:#475569;  /* secondary */
+  --line:#e5e7eb;   /* borders */
+
+  /* Dark-blue theme accents (match Generate Bill) */
+  --panel:#0e2a6d;     /* dark blue */
+  --panel2:#10307a;    /* header blue */
+  --brand:#2563eb;     /* bright blue */
+  --brand2:#9333ea;    /* purple */
+  --brand3:#22c55e;    /* green */
+
+  --thead:#10307a;     /* screen table header bg (dark) */
+  --theadPrint:#dbeafe;/* print table header bg (light blue) */
+  --totalBg:#ecfdf5;   /* total row bg (screen & print) */
+  --totalBorder:#a7f3d0;
+  --btnBg:#fafafa; --btnBorder:#cbd5e1; --btnText:#111827;
+}
+
+/* ----- Screen base (small centered card) ----- */
+body{
+  background:var(--bg) !important;
+  color:var(--ink) !important;
+  margin:16px !important;
+  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
+}
+
+/* Keep everything narrow & centered */
+.header, table, .controls{
+  width:min(720px, 94vw) !important;
+  margin-left:auto !important; margin-right:auto !important;
+}
+
+/* Paper card */
+.header, table{
+  background:var(--paper) !important;
+  border:1px solid var(--line) !important;
+  border-radius:12px !important;
+  box-shadow:0 14px 30px rgba(2,6,23,.08) !important;
+  position:relative !important;
+}
+
+/* Color ribbon like Generate Bill */
+.header::before{
+  content:""; position:absolute; inset:0 auto auto 0; height:6px;
+  width:100%; border-top-left-radius:12px; border-top-right-radius:12px;
+  background:linear-gradient(90deg,var(--brand),var(--brand2),var(--brand3));
+}
+
+/* Header content */
+.header{
+  display:flex !important; justify-content:space-between !important; gap:18px !important;
+  padding:18px 16px 12px !important;
+}
+.header h2{
+  margin:4px 0 6px 0 !important; font-size:19px !important; font-weight:800 !important;
+  color:var(--brand) !important;
+}
+.header p{ margin:3px 0 !important; color:var(--muted) !important; font-size:13px !important; }
+
+/* Table */
+table{
+  border-collapse:separate !important; border-spacing:0 !important;
+  margin-top:12px !important; overflow:hidden !important;
+}
+th, td{
+  padding:10px 12px !important;
+  border-bottom:1px solid var(--line) !important;
+  font-size:13px !important;
+}
+th{
+  background:var(--thead) !important;  /* dark blue like Generate Bill */
+  color:#fff !important;
+  text-align:left !important; font-weight:800 !important; font-size:14px !important;
+}
+tr:last-child td{ border-bottom:none !important; }
+
+/* Alignment */
+th:first-child, td:first-child{ width:48px !important; text-align:center !important; }
+td:nth-child(3), /* Qty */
+td:nth-child(4), /* Unit Price */
+td:nth-child(5){ /* Line Total */
+  text-align:right !important; font-variant-numeric:tabular-nums !important;
+}
+
+/* Total row highlight */
+.tot{ font-weight:800 !important; }
+tr:last-child td{
+  background:var(--totalBg) !important;
+  border-top:1px solid var(--totalBorder) !important;
+}
+
+/* Buttons (screen only) */
+.controls{
+  margin-top:14px !important; display:flex !important; gap:10px !important; flex-wrap:wrap !important;
+}
+.btn{
+  display:inline-block !important; padding:8px 12px !important; border-radius:10px !important;
+  text-decoration:none !important; cursor:pointer !important;
+  background:var(--btnBg) !important; border:1px solid var(--btnBorder) !important; color:var(--btnText) !important;
+  font-weight:800 !important; font-size:13px !important;
+}
+.btn:hover{ filter:brightness(.98) !important; }
+
+/* ----- Print styles (keep color, but lighter where needed) ----- */
+@media print{
+  @page{ size:A4; margin:12mm; }
+  body{ margin:0 !important; background:#fff !important; color:#000 !important; }
+  .controls{ display:none !important; }
+
+  /* full width, crisp borders */
+  .header, table{
+    width:100% !important; margin:0 !important;
+    box-shadow:none !important; border-radius:0 !important;
+    border-color:#000 !important;
+  }
+
+  /* show a lighter ribbon on print */
+  .header::before{
+    background:linear-gradient(90deg,#9ec5ff,#d6b4ff,#b8f2c9) !important;
+    border-top-left-radius:0 !important; border-top-right-radius:0 !important;
+  }
+  .header h2{ color:#000 !important; }
+  .header p{ color:#000 !important; }
+
+  /* lighter header bg for readability on paper */
+  th{
+    background:var(--theadPrint) !important; color:#000 !important;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  th, td{ border-color:#000 !important; }
+
+  /* keep total row tinted */
+  tr:last-child td{
+    background:var(--totalBg) !important;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    border-top:1px solid #16a34a !important;
+  }
+}

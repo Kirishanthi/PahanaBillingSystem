@@ -1,0 +1,120 @@
+/* ===== Base (light UI like your admin screenshot) ===== */
+:root{
+  --bg:#f6f8fc;
+  --panel:#ffffff;
+  --text:#0f172a;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --brand:#1e40af;      /* blue icon */
+  --pill:#5022a6;       /* purple welcome pill */
+  --danger:#dc2626;     /* logout */
+}
+
+*{ box-sizing:border-box }
+html,body{ height:100% }
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ===== Topbar ===== */
+.topbar{
+  position: sticky; top: 0; z-index: 50;
+  display:flex; align-items:center; gap:16px;
+  padding: 12px 18px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 2px 10px rgba(0,0,0,.04);
+}
+
+/* Brand (left) */
+.brand{ display:flex; align-items:center; gap:10px; font-weight:700 }
+.brand i{ color: var(--text); font-size:18px }
+.brand span{ font-size:16px }
+
+/* Menu (center) */
+.menu{
+  display:flex; align-items:center; gap:22px;
+  margin-inline: auto;
+}
+.menu a{
+  display:inline-flex; align-items:center; gap:8px;
+  text-decoration:none; color: var(--text);
+  font-weight: 700; font-size: 14.5px;
+  padding: 8px 10px; border-radius: 8px;
+}
+.menu a i{ font-size:14px }
+.menu a:hover{
+  background:#f3f4f6;
+}
+
+/* Actions (right) */
+.actions{ display:flex; align-items:center; gap:10px }
+.btn-logout{
+  display:inline-flex; align-items:center; gap:8px;
+  text-decoration:none; font-weight:700; font-size:14px;
+  color: var(--danger);
+  border: 1px solid rgba(220,38,38,.25);
+  padding: 8px 12px; border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(220,38,38,.08);
+}
+.btn-logout:hover{ background: #fff5f5 }
+
+/* ===== Container & Hero Card ===== */
+.container{
+  max-width: 980px;
+  margin: 48px auto;
+  padding: 0 16px;
+}
+
+.hero-card{
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(2,6,23,.06);
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 28px 26px;
+}
+
+/* Left big shield icon (blue like screenshot) */
+.hero-left{
+  display:flex; align-items:center; justify-content:center;
+}
+.hero-left i{
+  font-size: 54px;
+  color: #2563eb; /* bright blue */
+}
+
+/* Right content: purple pill + sub text */
+.welcome-pill{
+  display:inline-block;
+  background: var(--pill);
+  color: #fff;
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1;
+  padding: 14px 18px;
+  border-radius: 14px;
+  box-shadow: 0 10px 18px rgba(80,34,166,.28);
+  letter-spacing:.2px;
+}
+.sub{
+  margin: 10px 4px 0 4px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px){
+  .menu{ display:none; } /* collapse menu on small screens */
+  .container{ margin: 32px auto; }
+  .hero-card{ grid-template-columns: 72px 1fr; padding: 22px; }
+  .hero-left i{ font-size:42px }
+  .welcome-pill{ font-size:22px; padding: 12px 14px }
+}

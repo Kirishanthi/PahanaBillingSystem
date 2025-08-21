@@ -1,0 +1,62 @@
+/* === My Account: color overrides to match dark-blue theme === */
+:root{
+  --bg:#f6f8fc;
+  --panel:#0e2a6d;   /* main dark blue */
+  --panel2:#10307a;  /* table header blue */
+  --text:#ffffff;
+  --muted:#c7d2fe;
+  --line:rgba(255,255,255,.16);
+  --btnBg:#22c55e;   /* green button */
+  --btnText:#0b2f1e;
+  --errBg:#fff1f2; --errText:#9f1239; --errBorder:#fecdd3;
+}
+
+/* Small, centered cards (same scale as others) */
+.meta,
+table{
+  background:var(--panel) !important;
+  color:var(--text) !important;
+  border:1px solid var(--line) !important;
+  border-radius:16px !important;
+  box-shadow:0 16px 32px rgba(2,6,23,.18) !important;
+  width:min(720px,95vw) !important;
+  margin-left:auto !important; margin-right:auto !important;
+}
+
+/* Meta card text tones */
+.meta strong{ color:var(--muted) !important; }
+
+/* Bills table header = same blue used elsewhere */
+th{
+  background:var(--panel2) !important;
+  color:#fff !important;
+  border-bottom:1px solid var(--line) !important;
+}
+
+/* Table rows look consistent */
+td{ border-bottom:1px solid var(--line) !important; }
+tr:nth-child(even) td{ background:rgba(255,255,255,.04) !important; }
+tr:hover td{ background:rgba(255,255,255,.08) !important; }
+
+/* Amount column right-aligned */
+td:nth-child(3){
+  text-align:right !important;
+  font-variant-numeric:tabular-nums !important;
+}
+
+/* Buttons match theme green */
+.btn{
+  background:var(--btnBg) !important;
+  color:var(--btnText) !important;
+  border:0 !important;
+  border-radius:10px !important;
+  font-weight:800 !important;
+  box-shadow:0 6px 14px rgba(34,197,94,.25) !important;
+}
+.btn:hover{ filter:brightness(.98) !important; }
+
+/* Error banner stays same style/size */
+.err{
+  width:min(720px,95vw) !important;
+  margin-left:auto !important; margin-right:auto !important;
+}

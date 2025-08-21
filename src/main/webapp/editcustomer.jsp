@@ -25,6 +25,7 @@
         session.removeAttribute("message");
     }
 %>
+<title>Pahana Edu - Login</title><link rel="stylesheet" href="<%=request.getContextPath()%>/css/editcustomer.css">
 
 <h2>Edit Customer</h2>
 

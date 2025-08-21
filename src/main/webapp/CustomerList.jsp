@@ -18,6 +18,7 @@
         session.removeAttribute("message");
     }
 %>
+<title>Pahana Edu - Login</title><link rel="stylesheet" href="<%=request.getContextPath()%>/css/customerlist.css">
 
 <table border="1" cellpadding="5" cellspacing="0">
 <tr>

@@ -5,7 +5,8 @@
         response.sendRedirect("login.jsp");
         return;
     }
-%>
+%><title>Pahana Edu - Login</title><link rel="stylesheet" href="<%=request.getContextPath()%>/css/addcustomer.css">
+
 <h2>Add Customer</h2>
 <form action="CustomerServlet" method="post">
     <input type="hidden" name="action" value="add">

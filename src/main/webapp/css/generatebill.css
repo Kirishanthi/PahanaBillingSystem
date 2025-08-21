@@ -1,0 +1,139 @@
+/* ===== Generate Bill — compact dark-blue cards (no markup changes) ===== */
+:root{
+  --bg:#f6f8fc;
+  --panel:#0e2a6d;     /* card bg */
+  --panel2:#10307a;    /* table head */
+  --text:#ffffff;
+  --muted:#c7d2fe;
+  --line:rgba(255,255,255,.16);
+  --btn:#22c55e; --btnText:#0b2f1e;
+  --okBg:#ecfdf5; --okText:#065f46; --okBorder:#a7f3d0;
+  --errBg:#fff1f2; --errText:#9f1239; --errBorder:#fecdd3;
+}
+
+/* Page */
+body{
+  background:var(--bg) !important;
+  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
+  color:#0f172a !important;
+  margin:16px !important;
+}
+h2{ margin:0 0 6px !important; text-align:center !important; font-weight:800 !important; font-size:20px !important; }
+h3{ margin:0 0 8px !important; color:#0f172a !important; font-size:16px !important; }
+
+/* Layout container (narrow & centered) */
+.row{
+  display:flex !important; gap:18px !important; flex-wrap:wrap !important; align-items:flex-start !important;
+  max-width:min(820px,95vw) !important; margin:10px auto 0 !important; justify-content:center !important;
+}
+.col{ flex:0 1 auto !important; }
+
+/* Flash messages (match narrow width) */
+.flash{
+  width:min(720px,95vw) !important; margin:10px auto !important; padding:10px 12px !important; border-radius:10px !important;
+  font-weight:600 !important;
+}
+.ok{ background:var(--okBg) !important; color:var(--okText) !important; border:1px solid var(--okBorder) !important; }
+.err{ background:var(--errBg) !important; color:var(--errText) !important; border:1px solid var(--errBorder) !important; }
+
+/* ---------- Left: Add Item (small card) ---------- */
+.row > .col:first-child form{
+  width:min(380px,92vw) !important;
+  margin-inline:auto !important;
+  padding:14px !important;
+  background:var(--panel) !important; color:var(--text) !important;
+  border:1px solid var(--line) !important; border-radius:16px !important;
+  box-shadow:0 16px 32px rgba(2,6,23,.18) !important;
+}
+.row > .col:first-child label{
+  display:block !important; margin:8px 0 4px !important; font-weight:700 !important; color:var(--muted) !important;
+}
+.row > .col:first-child select,
+.row > .col:first-child input[type="number"],
+.row > .col:first-child input[type="text"]{
+  width:100% !important; padding:8px 10px !important; margin:4px 0 10px !important;
+  border-radius:10px !important; border:1px solid var(--line) !important;
+  background:#fff !important; color:#0f172a !important; outline:none !important; box-sizing:border-box !important;
+}
+.row > .col:first-child select:focus,
+.row > .col:first-child input[type="number"]:focus,
+.row > .col:first-child input[type="text"]:focus{
+  border-color:#93c5fd !important; box-shadow:0 0 0 3px rgba(59,130,246,.25) !important;
+}
+
+/* ---------- Buttons (compact) ---------- */
+.controls{ margin-top:12px !important; display:flex !important; gap:10px !important; flex-wrap:wrap !important; }
+.btn{
+  display:inline-block !important; padding:8px 12px !important; border-radius:10px !important;
+  text-decoration:none !important; cursor:pointer !important;
+  background:#fafafa !important; border:1px solid #cbd5e1 !important; color:#111827 !important; font-weight:800 !important;
+}
+.btn:hover{ filter:brightness(.98) !important; }
+.btn-primary{
+  background:var(--btn) !important; border-color:transparent !important; color:var(--btnText) !important;
+  box-shadow:0 6px 14px rgba(34,197,94,.25) !important;
+}
+
+/* ---------- Right: Bill Items table (small card) ---------- */
+.row > .col:last-child table{
+  width:min(680px,95vw) !important;
+  margin:8px auto 0 !important;
+  border-collapse:separate !important; border-spacing:0 !important;
+  background:var(--panel) !important; color:var(--text) !important;
+  border:1px solid var(--line) !important; border-radius:16px !important; overflow:hidden !important;
+  box-shadow:0 16px 32px rgba(2,6,23,.18) !important;
+}
+.row > .col:last-child th{
+  background:var(--panel2) !important; color:#fff !important; text-align:left !important; font-weight:800 !important;
+  padding:10px 12px !important; border-bottom:1px solid var(--line) !important; font-size:14px !important;
+}
+.row > .col:last-child td{
+  padding:10px 12px !important; border-bottom:1px solid var(--line) !important; font-size:13px !important;
+}
+.row > .col:last-child tr:last-child td{ border-bottom:none !important; }
+.row > .col:last-child tr:nth-child(even) td{ background:rgba(255,255,255,.04) !important; }
+.row > .col:last-child tr:hover td{ background:rgba(255,255,255,.08) !important; }
+/* Alignment */
+.row > .col:last-child td:nth-child(2),
+.row > .col:last-child td:nth-child(3),
+.row > .col:last-child td:nth-child(4){
+  text-align:right !important; font-variant-numeric:tabular-nums !important;
+}
+/* Remove button inside table */
+.row > .col:last-child td .btn{
+  background:rgba(255,255,255,.12) !important; color:#f8fafc !important; border-color:rgba(255,255,255,.24) !important;
+}
+.row > .col:last-child td .btn:hover{ background:rgba(255,255,255,.18) !important; }
+
+/* Divider matches narrow width */
+hr{
+  border:none !important; height:1px !important; background:#e5e7eb !important;
+  width:min(720px,95vw) !important; margin:18px auto !important;
+}
+
+/* ---------- Bottom: Customer & Save (small wide card) ---------- */
+body > form[action$="/BillServlet"]{
+  width:min(720px,95vw) !important;
+  margin:0 auto 20px !important;
+  padding:14px !important;
+  background:var(--panel) !important; color:var(--text) !important;
+  border:1px solid var(--line) !important; border-radius:16px !important;
+  box-shadow:0 16px 32px rgba(2,6,23,.18) !important;
+}
+body > form[action$="/BillServlet"] label{
+  display:block !important; margin:8px 0 4px !important; font-weight:700 !important; color:var(--muted) !important;
+}
+body > form[action$="/BillServlet"] input[type="text"]{
+  width:100% !important; padding:9px 10px !important; border-radius:10px !important; border:1px solid var(--line) !important;
+  background:#fff !important; color:#0f172a !important; outline:none !important; box-sizing:border-box !important;
+}
+body > form[action$="/BillServlet"] input[type="text"]:focus{
+  border-color:#93c5fd !important; box-shadow:0 0 0 3px rgba(59,130,246,.25) !important;
+}
+body > form[action$="/BillServlet"] .controls{ margin-top:12px !important; }
+
+/* Small screens */
+@media (max-width: 720px){
+  .row{ gap:14px !important; }
+  .row > .col:last-child table{ width:100% !important; }
+}

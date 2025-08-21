@@ -11,7 +11,8 @@
     String msg = (String) session.getAttribute("message");
     if(msg != null){ out.println("<p style='color:green'>"+msg+"</p>"); session.removeAttribute("message"); }
     List<UserBean> staffList = (List<UserBean>) request.getAttribute("staffList");
-%>
+%><title>Pahana Edu - Login</title><link rel="stylesheet" href="<%=request.getContextPath()%>/css/stafflist.css">
+
 <table border="1" cellpadding="5" cellspacing="0">
 <tr>
     <th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Actions</th>
